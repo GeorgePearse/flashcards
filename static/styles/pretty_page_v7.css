@@ -9,6 +9,11 @@
     grid-template-columns: 1fr 1fr;
 }
 
+.title div {
+    grid-column-start: span 2;
+    background-color: rgb(86, 150, 114);
+}
+
 .grid div:nth-child(even) {
     background-color: blue;
 }

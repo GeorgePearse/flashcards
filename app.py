@@ -8,15 +8,6 @@ import json
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 coll = client["local"]["test4"]
 
-
-# %%
-class card_set:
-    def __init__(self,pairings,alternatives):
-        self.pairings = pairings
-        self.alternatives = alternatives
-
-french = card_set({'bonjour':'hello'},{'bonjour':'salut'})
-
 app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST'])
@@ -39,7 +30,7 @@ def check():
         text = request.form['text']
         collection = client["local"]["test4"].find_one({})
 
-        dict_response = {} # this is a horrible temporary workaround!!!
+        dict_response = {} # this is a horrible temporary workaround to convert mongodb output to a dictionary of pairs of words!!!
         cursor = coll.find()
         for record in cursor:
             item = list(record.values())[1]
