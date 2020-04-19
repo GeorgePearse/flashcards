@@ -3,14 +3,19 @@
     padding: 0;
 }
 
+
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
+
 .grid div:nth-child(even) {
-    background-color: rebeccapurple;
+    background-color: blue;
 }
+
 
 .grid div:nth-child(odd) {
     background-color: red;
 }
+
+
