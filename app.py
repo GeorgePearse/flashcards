@@ -28,11 +28,10 @@ def insert():
     if request.method == 'GET':
         return render_template('form.html',user="George")
     if request.method == 'POST':
-        if request.name == 'insert':
-            text = request.form['text']
-            key,value = text.split('=')
-            coll.insert_one({key:value})
-            return render_template('insert_response.html',key=key,value=value)
+        text = request.form['text']
+        key,value = text.split('=')
+        coll.insert_one({key:value})
+        return render_template('insert_response.html',key=key,value=value)
         
 @app.route('/check', methods=['GET','POST'])
 def check():
