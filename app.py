@@ -54,6 +54,10 @@ def check():
             result += '     Selected card is in the deck'
         return render_template('check_response.html',check=str(text),result=str(result))
 
+@app.route('/pretty', methods=['GET'])
+def pretty():
+    return render_template('pretty_page.html')
+
 app.run(debug=True)
 
 # %%
