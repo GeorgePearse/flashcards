@@ -19,44 +19,61 @@
     }
 
     .wrapper > div{
-      background:#eee;
+      background:rgb(58, 57, 57);
       padding:1em;
     }
     .wrapper > div:nth-child(odd){
-      background:#ddd;
+      background:rgb(58, 57, 57);;
     }
 
     .nested > div{
       border:#333 1px solid;
       padding:1em;
     }
+
+    h1 {padding: 0%; 
+        text-align:left}
+
+    h2 {padding: 0%; 
+      text-align:left;
+      font-size:small}
+
+    .button-basic {
+    background-color: #4b5052;
+    border: 2px solid black;
+    color: whitesmoke;
+    padding: 1em 1.5em;
+    text-align: center;
+    text-decoration: none;
+    width: 100pc;
+    font-size: 1em;
+    display: block;
+    width:100%    } 
+
   </style>
 </head>
-<title>Here is the title?</title>
-
+<h1 style="color:  grey; font-family: Arial, Helvetica, sans-serif;" class='title_'> <b>Flash Learning </b> </h1>
+<h2 style="color:  grey; font-family: Arial, Helvetica, sans-serif;" class='subtitle'>
+  Eventually this will be a webpage which enables you to save flashcards and very carefully tracks your progress.
+  The key feature will be the use of Reinforcement learning to optimise the training process.
+</h2>
 <body style="background-color:black ;text-align:center"></body>>
   <div class="wrapper">
     <div>
       <img src="/static/generic_tech.jpg" alt="Dark tech image">    </div>
-    <div>
+    <div class="btn-toolbar">
         Button to return to the homepage
-        <a href={{ url_for('insert') }} style="text-decoration:none"> 
-          <button  label="home_button" name="so_link">Home</button>    
-    </div>
-    <div class="nested">
-
-    </div>
-    <div>
-      Lorem ipsum dolor sit.
-    </div>
-    <div>
-      Lorem ipsum dolor sit.
-    </div>
-    <div>
-      Lorem ipsum dolor sit.
-    </div>
-    <div>
-      Lorem ipsum dolor sit.
+        <div class="button-container">
+        <a>
+          <button class="button-basic">Basic</button>
+        </a>
+        <a>
+          <button class="button-basic">Basic</button>
+        </a>
+        <a>
+          <button class="button-basic">Basic</button>
+        </a>
+        </div>
     </div>
   </div>
   
