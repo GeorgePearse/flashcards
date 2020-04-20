@@ -4,11 +4,66 @@ import json
 import requests
 import pymongo
 import json
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_dangerously_set_inner_html
+
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 coll = client["local"]["test4"]
 
 app = Flask(__name__)
+
+app2 = dash.Dash(
+    __name__,
+    server=app,
+    url_base_pathname='/dash/'
+)
+
+colors = {
+    'background': '#111111',
+    'text': '#7FDBFF'
+}
+
+app2.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+    html.H1(
+        children='Hello Dash',
+        style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }
+    ),
+    
+    dash_dangerously_set_inner_html.DangerouslySetInnerHTML('''
+            <form>
+            <input type="button" value="Go back!" onclick="history.back()">
+            </form>
+    '''),
+
+    html.Div(children='Dash: A web application framework for Python.', style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+
+    dcc.Graph(
+        id='example-graph-2',
+        figure={
+            'data': [
+                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+            ],
+            'layout': {
+                'plot_bgcolor': colors['background'],
+                'paper_bgcolor': colors['background'],
+                'font': {
+                    'color': colors['text']
+                }
+            }
+        }
+    )
+])
+
 
 @app.route('/', methods=['GET','POST'])
 def home():
