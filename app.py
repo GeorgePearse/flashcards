@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST'])
 def home():
-    return render_template('temp_home.html')
+    return render_template('pretty_page.html')
 
 @app.route('/insert', methods=['GET','POST'])
 def insert():
@@ -24,6 +24,20 @@ def insert():
         coll.insert_one({key:value})
         return render_template('insert_response.html',key=key,value=value)
         
+
+@app.route('/translate', methods=['GET','POST'])
+def translate():
+    if request.method == 'POST':
+        text = request.form['text']
+        url = "https://systran-systran-platform-for-language-processing-v1.p.rapidapi.com/translation/text/translate"
+        querystring = {"source":"en","target":"fr","input":str(text)}
+        headers = {
+            'x-rapidapi-host': "systran-systran-platform-for-language-processing-v1.p.rapidapi.com",
+            'x-rapidapi-key': "5629c1bf3fmshe44ae221a90eb80p153099jsne58bc0254bd4"
+            }
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        return json.loads(response.text)['outputs'][0]['output']
+
 @app.route('/check', methods=['GET','POST'])
 def check():
     if request.method == 'POST':
@@ -45,9 +59,6 @@ def check():
             result += '     Selected card is in the deck'
         return render_template('check_response.html',check=str(text),result=str(result))
 
-@app.route('/pretty', methods=['GET'])
-def pretty():
-    return render_template('pretty_page.html')
 
 app.run(debug=True)
 
