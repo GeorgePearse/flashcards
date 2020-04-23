@@ -72,7 +72,11 @@ def home():
 
 @app.route('/about', methods=['GET','POST'])
 def about():
-    return render_template('about.html')    
+    return render_template('about.html')  
+
+@app.route('/canvas', methods=['GET','POST'])
+def canvas():
+    return render_template('canvas.html')    
 
 @app.route('/insert', methods=['GET','POST']) #hit simultaneously by two queries
 def insert():
@@ -91,7 +95,7 @@ def ajax():
         front = request.form.get('cfront', 'no front')
         back = request.form.get('cback', 'no back')
         coll.insert_one({front:back})
-        return render_template('insert_response.html',front = front, back = back)
+        return render_template('home_page.html')
 
 @app.route('/translate', methods=['GET','POST'])
 def translate():
