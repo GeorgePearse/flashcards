@@ -19,11 +19,11 @@
     }
 
     .wrapper > div{
-      background:rgb(58, 57, 57);
+      background: rgb(22, 22, 22);
       padding:1em;
     }
     .wrapper > div:nth-child(odd){
-      background:rgb(58, 57, 57);;
+      background: rgb(22, 22, 22);
     }
 
     .nested > div{
@@ -32,11 +32,15 @@
     }
 
     h1 {padding: 0%; 
-        text-align:left}
+        text-align:left;
+        font-family: Arial, Helvetica, sans-serif;
+        text-indent: 50px
+        }
 
     h2 {padding: 0%; 
       text-align:left;
-      font-size:small}
+      font-size:small;
+      text-indent: 50px}
 
     .button-basic {
     background-color: #4b5052;
@@ -52,12 +56,16 @@
 
     /* The navigation bar */
 .navbar {
+  float: 0px;
   overflow: hidden;
-  background-color: #333;
+  background-color: rgb(22, 22, 22);
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 93%; /* Full width */
   padding: 0em 3em;
+  border-bottom-width:0.5px;
+  border-bottom-style:solid;
+  border-bottom-color:grey;
 }
 
 /* Links inside the navbar */
@@ -80,18 +88,31 @@
   text-decoration: none;
 }
 
-.navbar a[name='logo'] {
+div[name='company'] {
   float: left;
   display: block;
   color: #f2f2f2;
   text-align: center;
   padding: 14px 30px;
+  text-decoration
+  : none;
 }
 
+div[name='login_div'] {
+  display: inline-block;
+  float: middle;
+  padding: 70px 50px;
+  background-color: rgb(26, 25, 25);
+  margin-top: 100px;
+  border-width:0.5px;
+  border-style:solid;
+  border-color:grey;
+  box-shadow: 0 8px 6px -6px white
+}
 
 /* Change background on mouse-over */
 .navbar a:hover {
-  background: #ddd;
+  background: rgb(37, 37, 37);
   color: black;
 }
 
@@ -110,66 +131,52 @@ html, body {
   min-height: 100%;
   margin: 0 auto -50px;
 }
-.footer,
-.push {
-  height: 50px;
+
+table {
+  display: inline-block;
+  float: middle;
 }
 
+input {
+  background-color: #333;
+  outline: none !important;
+  box-shadow: 0 0 10px rgb(54, 54, 54)
+}
 
+button {
+  width: 150px;
+  background-color: rgb(68, 67, 67);
+}
 
-
-  </style>
+</style>
 </head>
 
 <div class="navbar">
-  <a name="buttons" href={{ url_for('.insert') }}  > About </a>
+  <a name="company"> Flash Learning </a>
+  <a name="buttons" href={{ url_for('.about') }}  > About </a>
   <a name="buttons" href={{ url_for('.insert') }}  > Learn </a>
   <a name="buttons" href={{ url_for('./dash/') }}  > Stats </a>
-  <a name="buttons" href={{ url_for('.insert') }}  > + </a>
+  <a name="buttons" href={{ url_for('.ajax') }}  > + </a>
 </div>
-
-<div class="main">
-  <p>Some text some text some text some text..</p>
-</div>
-
-<h1 style="color:  grey; font-family: Arial, Helvetica, sans-serif;" class='title_'> <b>Flash Learning </b> </h1>
+<h1 style="color:  grey; font-family: Arial, Helvetica, sans-serif;" class='title_'> <b> </b> </h1>
 <h2 style="color:  grey; font-family: Arial, Helvetica, sans-serif;" class='subtitle'>
-  Eventually this will be a webpage which enables you to save flashcards and very carefully tracks your progress.
-  The key feature will be the use of Reinforcement learning to optimise the training process.
-
 </h2>
 <body style="background-color:black ;text-align:center"></body>>
-  <div class="wrapper">
-    <div>
-      <img src="/static/generic_tech.jpg" alt="Dark tech image"> </img>    </div>
-    <div class="btn-toolbar">
-    <div>
-      <img src="/static/generic_tech.jpg" alt="Dark tech image"> </img>   </div>
-    <div class="btn-toolbar">
-        Button to return to the homepage
-        <div class="button-container">
-        <a href={{ "http://127.0.0.1:5000/" }} style="text-decoration:none"> 
-          <button class="button-basic"> Stats </button>
-        </a>
-        <a href={{ url_for('.insert') }} style="text-decoration:none"> 
-          <button class="button-basic"> Add Cards </button>
-        </a>
-        <a href={{ "http://127.0.0.1:5000/" }} style="text-decoration:none"> 
-          <button class="button-basic"> Learn </button>
-        </a>
-        </div>
-    </div>
-  </div>
-
-  <div class="content">
-    <h1>Sticky Footer with Negative Margin 1</h1>
-    <p><button id="add">Add Content</button></p>
-    <div class="push"></div>
-  </div>
-  
-  <footer class="footer">
-    Footer 
-  </footer>
+<div name='login_div'> 
+  <form id="myform" action="/ajax" method="post">
+    <table>
+        <tr>
+            <td><input name="username" type="text"></input></td>
+        </tr>
+        <tr>
+            <td><input name="password" type="text"></input></td>
+        </tr>
+        <tr>
+            <td><button id="button" style="float: middle" type=”submit” value=”submit” > Log-In </button></td>
+        </tr>
+    </table>
+  </form>
+</div>
 
 </body>
 </html>

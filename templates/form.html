@@ -2,13 +2,34 @@
 
 <title> George's marvellous flashcard webpage </title>
 <head> Morning {{user}} and welcome to my webpage </head>
-<p> Here you can insert a pair of words into the mongodb separated by '=' </p>
-<form method="POST" action = "/insert" name = "insert">
-    <input name="text">
-    <input type="submit">
+<p> Front of the card </p>
+<form method="POST" action = "/insert" name = "insert" id="form1">
+    <input name="text1">
+</form>
+<p> Back of the card </p>
+<form method="POST" action = "/insert" name = "insert" id="form2">
+    <input name="text2">
 </form>
 
+
+<script>
+
+var f = document.forms.updateDB;
+var postData = [];
+for (var i = 0; i < f.elements.length; i++) {
+    postData.push(f.elements[i].name + "=" + f.elements[i].value);
+}
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/insert", true);
+xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhr.send(postData.join("&"));
+
+document.forms.payPal.submit();
+</script>
+<input type="button" value=" Submit " onclick="submitForm2();submitForm1();" />
+
 <p>Here you can retrieve the 'back' of the flashcard</p>
+
 <form method="POST" action = "/check" name = "check">
     <input name="text">
     <input type="submit">

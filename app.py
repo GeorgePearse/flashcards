@@ -39,6 +39,7 @@ app2.layout = html.Div(style={'backgroundColor': colors['background']}, children
             <form>
             <input type="button" value="Go back!" onclick="history.back()">
             </form>
+            <body style="background-color:rgb(22, 22, 22)"> </body>
     '''),
 
     html.Div(children='Dash: A web application framework for Python.', style={
@@ -64,21 +65,33 @@ app2.layout = html.Div(style={'backgroundColor': colors['background']}, children
     )
 ])
 
-
+@app.route("/home", methods=['GET','POST'])
 @app.route('/', methods=['GET','POST'])
 def home():
     return render_template('pretty_page.html')
 
-@app.route('/insert', methods=['GET','POST'])
+@app.route('/about', methods=['GET','POST'])
+def about():
+    return render_template('about.html')    
+
+@app.route('/insert', methods=['GET','POST']) #hit simultaneously by two queries
 def insert():
     if request.method == 'GET':
         return render_template('form.html',user="George")
     if request.method == 'POST':
-        text = request.form['text']
-        key,value = text.split('=')
-        coll.insert_one({key:value})
-        return render_template('insert_response.html',key=key,value=value)
+        test = request.form
+        #coll.insert_one({key:value})
+        return test #render_template('insert_response.html',key=key,value=value)
         
+@app.route('/ajax', methods=['GET','POST']) #hit simultaneously by two queries
+def ajax():
+    if request.method == 'GET':
+        return render_template('ajax.html',user="George")
+    if request.method == 'POST':
+        front = request.form.get('cfront', 'no front')
+        back = request.form.get('cback', 'no back')
+        coll.insert_one({front:back})
+        return render_template('insert_response.html',front = front, back = back)
 
 @app.route('/translate', methods=['GET','POST'])
 def translate():
@@ -116,5 +129,3 @@ def check():
 
 
 app.run(debug=True)
-
-# %%

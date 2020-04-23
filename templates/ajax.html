@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#button {
+  transition-duration: 0.4s;
+  padding: 15px 25px
+}
+
+#button:hover {
+  background-color: grey; /* Green */
+  color: white;
+}
+</style>
+</head>
+
+<form id="myform" action="/ajax" method="post">
+    <table>
+        <tr>
+            <td>Card Front:</td>
+            <td><input name="cfront" type="text"></input></td>
+        </tr>
+        <tr>
+            <td>Card Back:</td>
+            <td><input name="cback" type="text"></input></td>
+        </tr>
+        <tr>
+            <td><button id="button" type=”submit” value=”submit” > Submit </button></td>
+        </tr>
+    </table>
+</form>
+
+<script>
+var arr = ["list", "items", "here"];
+$("div").append("<ul></ul>");
+for(var i in arr) {
+    var li = "<li>";
+    $("ul").append(li.concat(arr[i]))
+}
+</script>
+
+<script>
+    $('#myform).submit( function(e) {
+    success:function(data){
+    alert(‘ Your form was submitted ‘);
+    }});
+    <
+</script>
+
+</html>
