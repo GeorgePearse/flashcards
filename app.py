@@ -162,8 +162,7 @@ def check():
         answer = data['card_front']
         right_answer = session.get('right_answer','FAILURE')
         guesses_data.insert_one({'right_answer':right_answer,'answer':answer,'time':datetime.now()}) # again this wil fix many problems down the line!
-        match = True if answer == right_answer else False
+        match = "True" if answer == right_answer else "False"
         return render_template('check.html',right_answer=right_answer, answer=answer,match=match)
-
 
 app.run(debug=True)

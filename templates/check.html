@@ -63,12 +63,12 @@ div[name='back_card'] {padding-top:30px; font-size: 20}
 <form id="myform" action="/check" method="get">
     <div name='back_card' style="width: 50%; float:left; font-size: 50px">
        <!-- <td> <b> --> <!--/b> </td> </br>  {{ card }} ? -->
-        <td> {{answer}} </td>
+        <td>  {{right_answer}} </td> 
      </div>
 
-    <div name='front_card' style="width: 50%; float:left; font-size: 50px">
+    <div id="front_div" name='front_card' style="width: 50%; float:left; font-size: 50px">
 
-        <td> {{right_answer}} </td>
+        <td> {{answer}} </td>
 
             <a href={{ url_for('.check') }} class="button" style="text-decoration:none"> Next </a>
         </form>
@@ -79,17 +79,8 @@ div[name='back_card'] {padding-top:30px; font-size: 20}
 <script>
 
 var match = "{{ match }}";
-if(match === true){
-        // do other stuff here
-     }
-    document.body.style.background = 'green';
- }
-
- if(match === false){
-        // do other stuff here
-     }
-    document.body.style.background = 'red';
- }
+if(match === "True"){document.getElementById("front_div").style.backgroundColor = "green";}
+if(match === "False"){ document.getElementById("front_div").style.backgroundColor = "red"; }
 
  </script>
 </html>
