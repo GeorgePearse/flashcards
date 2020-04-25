@@ -81,7 +81,7 @@ def canvas():
 @app.route('/insert', methods=['GET','POST']) #hit simultaneously by two queries
 def insert():
     if request.method == 'GET':
-        return render_template('form.html',user="George")
+        return render_template('insert.html',user="George")
     if request.method == 'POST':
         test = request.form
         #coll.insert_one({key:value})
@@ -92,10 +92,13 @@ def ajax():
     if request.method == 'GET':
         return render_template('ajax.html',user="George")
     if request.method == 'POST':
-        front = request.form.get('cfront', 'no front')
-        back = request.form.get('cback', 'no back')
+        # not working!
+        data = request.data
+        form = request.form.to_dict()
+        front = form.get('card_front', 'no front') # not working! 
+        back = form.get('card_back', 'no back') 
         coll.insert_one({front:back})
-        return render_template('home_page.html')
+        return render_template('insert_response.html',front=front,back=back,data='DATA = ' + str(data),form= 'FORM =' + str(form))
 
 @app.route('/translate', methods=['GET','POST'])
 def translate():

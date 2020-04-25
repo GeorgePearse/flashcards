@@ -2,15 +2,44 @@
 
 <title> George's marvellous flashcard webpage </title>
 <head> Morning {{user}} and welcome to my webpage </head>
+<style>
+
+    div[name='card'] {
+        border-radius: 25px;
+        background: white;
+        opacity: 0.9;
+        height: 300px
+    }
+
+    body {
+        background-image:url('static/starry.jpg'); 
+        background-attachment:fixed;
+        background-repeat: no-repeat;
+        background-position:center;
+        background-size: 100% 100%;
+        height:500vh
+    }
+
+    input[name='card_front'] {
+        left: 300px;
+    }
+
+    input[name='card_back'] {
+        left: 700px;
+    }
+</style>
+
 <p> Front of the card </p>
-<form method="POST" action = "/insert" name = "insert" id="form1">
+
+<div>
+<form method="POST" action = "/insert" name = "card_front" id="form1">
     <input name="text1">
 </form>
 <p> Back of the card </p>
-<form method="POST" action = "/insert" name = "insert" id="form2">
+<form method="POST" action = "/insert" name = "card_back" id="form2">
     <input name="text2">
 </form>
-
+</div>
 
 <script>
 
