@@ -135,7 +135,7 @@ def insert():
         form = request.form.to_dict()
         front = form.get('card_front', 'no front') # not working! 
         back = form.get('card_back', 'no back') 
-        coll.insert_one({front:back})
+        coll.insert_one({'front':front,'back':back}) # this will fix your future visualisation problem!!!!
         return render_template('insert_response.html',front=front,back=back,data='DATA = ' + str(data),form= 'FORM =' + str(form))
 
 @app.route('/translate', methods=['GET','POST'])
@@ -194,7 +194,7 @@ def check():
     if request.method == 'POST':
         data = request.form
         answer = data['card_front']
-        guesses_data.insert_one({right_answer:answer})
+        guesses_data.insert_one({'right_answer':right_answer,'answer':answer})
         return render_template('check.html', card=card, right_answer=right_answer, answer=answer)
 
 
