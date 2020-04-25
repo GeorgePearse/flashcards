@@ -20,6 +20,7 @@ body {
     background-size: 100% 100%;
     height:500vh
 }
+
 #button {
   border-radius: 10px;  
   transition-duration: 0.4s;
@@ -43,51 +44,46 @@ input[name='card_back'] {
     left: 700px;
 } */
 
-div[name='front_card'] {padding-top:30px}
-div[name='back_card'] {padding-top:30px}
+div[name='front_card'] {padding-top:30px; font-size: 50;}
+div[name='back_card'] {padding-top:30px; font-size: 20}
 
 
 </style>
 </head>
 <body>
 <div name="card">
-<form id="myform" action="/ajax" method="post">
+<form id="myform" action="/check" method="post">
+    <div name='back_card' style="width: 50%; float:left; font-size: 50px">
+       <!-- <td> <b> --> {{card}} <!--/b> </td> </br> -->
+        {{answer}}
+        
+     </div>
+
     <div name='front_card' style="width: 50%; float:left">
         <td> <b> Front: </b> </td> </br>
         <td><input name="card_front" type="text"></input></td>
-     </div>
+        <td> {{right_answer}} </td>
 
-     <div name='back_card' style="width: 50%; float:right">
-        <td> <b> Back: </b> </td> </br>
-        <td><input name="card_back" type="text"></input></td>
-        <td><button id="button" type=”submit” value=”submit” > Submit </button></td>
+        <form action="/check" method="get">
+            <td><button id="button" type=”submit” value=”submit” > Submit </button></td>
+        </form>
      </div>
-    <table>
-        </tr>
     </table>
 </form>
 </div>
 </body>
 
 <script>
-
-/*
-$('#myform).submit( function(e) {
-    success:function(data){
-    alert(‘ Your form was submitted ‘);
-    }});
-
-*/    
+   
 $("#myform).submit(function(e) {
-    e.preventDefault()    
+    e.preventDefault() 
 $.ajax({
     type : "POST",
-    url : "{{ url_for('ajax') }}",
+    url : "{{ url_for('check') }}",
     data: JSON.stringify(data, null, '\t'),
     contentType: 'application/json;charset=UTF-8',
     success: function(result) {
         console.log(result);
-    }  
+    }
 </script> 
-
 </html>

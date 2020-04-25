@@ -8,6 +8,24 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_dangerously_set_inner_html
+import random
+from flask_table import Table, Col
+from jinja2 import Template
+
+# Declare your table
+class ItemTable(Table):
+    id_ = Col('id_')
+    objectid = Col('objectid')
+    right_answer = Col('right answer')
+    answer = Col('answer')
+
+# Get some objects
+class Item(object):
+    def __init__(self, id_, objectid, right_answer, answer):
+        self.id = id_
+        self.objectid = objectid
+        self.right_answer = right_answer
+        self.answer = answer
 
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -65,32 +83,41 @@ app2.layout = html.Div(style={'backgroundColor': colors['background']}, children
     )
 ])
 
-@app.route("/home", methods=['GET','POST'])
+@app.route("/login", methods=['GET','POST'])
 @app.route('/', methods=['GET','POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('pretty_page.html')
+    if request.method == 'POST':
+        return render_template('home_page.html')
+
+# Print the html table
+@app.route(rule="/display_table", methods = ['GET'])
+def display_table():
+    rows = list(coll.find())    
+    table = ItemTable(rows)
+    return render_template('table.html', table=table.__html__())
+
+@app.route("/home", methods=['GET','POST'])
 def home():
-    return render_template('pretty_page.html')
+    return render_template('home_page.html')
 
 @app.route('/about', methods=['GET','POST'])
 def about():
     return render_template('about.html')  
 
+@app.route('/test', methods=['GET','POST'])
+def test():
+    return render_template('test.html')  
+
 @app.route('/canvas', methods=['GET','POST'])
 def canvas():
     return render_template('canvas.html')    
-
+        
 @app.route('/insert', methods=['GET','POST']) #hit simultaneously by two queries
 def insert():
     if request.method == 'GET':
-        return render_template('insert.html',user="George")
-    if request.method == 'POST':
-        test = request.form
-        #coll.insert_one({key:value})
-        return test #render_template('insert_response.html',key=key,value=value)
-        
-@app.route('/ajax', methods=['GET','POST']) #hit simultaneously by two queries
-def ajax():
-    if request.method == 'GET':
-        return render_template('ajax.html',user="George")
+        return render_template('insert2.html',user="George")
     if request.method == 'POST':
         # not working!
         data = request.data
@@ -113,26 +140,51 @@ def translate():
         response = requests.request("GET", url, headers=headers, params=querystring)
         return json.loads(response.text)['outputs'][0]['output']
 
+@app.route('/all_cards', methods=['GET']) # Call this the card stack?
+def all_cards():
+    deck = {}
+    cursor = coll.find({})
+    for record in cursor:
+        item = list(record.values())[1]
+        value = list(record.keys())[1]
+        if item not in list(record.keys()):
+            deck[item] = value
+        else:
+            pass
+    return str(deck)
+
+@app.route('/guesses', methods=['GET']) # Call this the card stack? -- want many of these as well!
+def guesses():
+    guesses_data = client["local"]["guesses"]
+    cursor = guesses_data.find({})
+    records = []
+    for record in cursor:
+        records.append(record)
+    return str(records)
+
 @app.route('/check', methods=['GET','POST'])
 def check():
+    guesses_data = client["local"]["guesses"]
+    deck = {}
+    cursor = coll.find({})
+    for record in cursor:
+        item = list(record.values())[1]
+        value = list(record.keys())[1]
+        if item not in list(record.keys()):
+            deck[item] = value
+        else:
+            pass
+
+    cards = list(deck.keys())
+    card = random.choice(cards)
+    right_answer = deck[card]
+    if request.method == 'GET':
+        return render_template('check.html', card=card)
     if request.method == 'POST':
-        text = request.form['text']
-        collection = client["local"]["test4"].find_one({})
-
-        dict_response = {} # this is a horrible temporary workaround to convert mongodb output to a dictionary of pairs of words!!!
-        cursor = coll.find()
-        for record in cursor:
-            item = list(record.values())[1]
-            value = list(record.keys())[1]
-            if item not in list(record.keys()):
-                dict_response[item] = value
-            else:
-                pass
-
-        result = dict_response.get(text, 'item not in database')
-        if result != 'item not in database':
-            result += '     Selected card is in the deck'
-        return render_template('check_response.html',check=str(text),result=str(result))
+        data = request.form
+        answer = data['card_front']
+        guesses_data.insert_one({right_answer:answer})
+        return render_template('check.html', card=card, right_answer=right_answer, answer=answer)
 
 
 app.run(debug=True)
