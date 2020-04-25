@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, render_template, url_for, redirect
+from flask import Flask, request, jsonify, render_template, url_for, redirect, session
 import json
 import requests
 import pymongo
@@ -10,6 +10,11 @@ import dash_html_components as html
 import dash_dangerously_set_inner_html
 import random
 import pandas as pd
+from datetime import datetime
+
+class data_store:
+    def __init__(self, value):
+        self.value = value
 
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -17,6 +22,7 @@ cards = client["local"]["cards"]
 guesses_data = client["local"]["guesses_data"]
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app2 = dash.Dash(
     __name__,
@@ -115,7 +121,7 @@ def insert():
         form = request.form.to_dict()
         front = form.get('card_front', 'no front') # not working! 
         back = form.get('card_back', 'no back') 
-        cards.insert_one({'front':front,'back':back}) # this will fix your future visualisation problem!!!!
+        cards.insert_one({'front':front,'back':back,'time':datetime.now()}) # this will fix your future visualisation problem!!!!
         return render_template('insert_response.html',front=front,back=back,data='DATA = ' + str(data),form= 'FORM =' + str(form))
 
 @app.route('/translate', methods=['GET','POST'])
@@ -136,7 +142,7 @@ def delete():
     return 'Delete Stuff here'
 
 @app.route('/check', methods=['GET','POST'])
-def check():
+def check():        
     deck = {}
     cursor = cards.find({})
     for record in cursor:
@@ -144,16 +150,20 @@ def check():
         value = record['front']
         deck[item] = value
 
-    fronts = list(deck.keys())
-    card = random.choice(fronts)
-    right_answer = deck[card]
     if request.method == 'GET':
-        return render_template('check.html', card=card)
+        fronts = list(deck.keys())
+        card = random.choice(fronts)
+        right_answer = deck[card]
+        session['right_answer'] = right_answer
+        return render_template('question.html', card=card)
+
     if request.method == 'POST':
         data = request.form
         answer = data['card_front']
-        guesses_data.insert_one({'right_answer':right_answer,'answer':answer}) # again this wil fix many problems down the line!
-        return render_template('check.html', card=card, right_answer=right_answer, answer=answer)
+        right_answer = session.get('right_answer','FAILURE')
+        guesses_data.insert_one({'right_answer':right_answer,'answer':answer,'time':datetime.now()}) # again this wil fix many problems down the line!
+        match = True if answer == right_answer else False
+        return render_template('check.html',right_answer=right_answer, answer=answer,match=match)
 
 
 app.run(debug=True)

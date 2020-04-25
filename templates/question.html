@@ -37,20 +37,14 @@ body {
   color: white;
 }
 
-a {
-  border-radius: 10px;  
-  transition-duration: 0.4s;
-  padding: 15px 25px;
-  background-color: rgb(113, 113, 238);
-  position: absolute;
-  right: 0;
-  bottom: 0;
+/*
+input[name='card_front'] {
+    left: 300px;
 }
 
-a:hover {
-  background-color: blue; /* Green */
-  color: white;
-}
+input[name='card_back'] {
+    left: 700px;
+} */
 
 div[name='front_card'] {padding-top:30px; font-size: 50;}
 div[name='back_card'] {padding-top:30px; font-size: 20}
@@ -60,36 +54,16 @@ div[name='back_card'] {padding-top:30px; font-size: 20}
 </head>
 <body>
 <div name="card">
-<form id="myform" action="/check" method="get">
     <div name='back_card' style="width: 50%; float:left; font-size: 50px">
-       <!-- <td> <b> --> <!--/b> </td> </br>  {{ card }} ? -->
-        <td> {{answer}} </td>
+       <!-- <td> <b> --> {{card}} <!--/b> </td> </br> -->        
      </div>
 
-    <div name='front_card' style="width: 50%; float:left; font-size: 50px">
-
-        <td> {{right_answer}} </td>
-
-            <a href={{ url_for('.check') }} class="button" style="text-decoration:none"> Next </a>
+    <div name='front_card' style="width: 50%; float:left">
+        <form id="myform" action="/check" method="post">
+            <td><input name="card_front" type="text"></input></td>
         </form>
      </div>
     </table>
 </div>
 </body>
-<script>
-
-var match = "{{ match }}";
-if(match === true){
-        // do other stuff here
-     }
-    document.body.style.background = 'green';
- }
-
- if(match === false){
-        // do other stuff here
-     }
-    document.body.style.background = 'red';
- }
-
- </script>
 </html>
