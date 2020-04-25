@@ -29,6 +29,15 @@ body {
   background-color: rgb(113, 113, 238);
 }
 
+a {
+  border-radius: 10px;  
+  transition-duration: 0.4s;
+  padding: 15px 25px;
+  bottom: 0px;
+  right: 0px;
+  background-color: rgb(113, 113, 238);
+}
+
 #button:hover {
   background-color: blue; /* Green */
   color: white;
@@ -61,6 +70,8 @@ div[name='back_card'] {padding-top:30px}
         <td> <b> Back: </b> </td> </br>
         <td><input name="card_back" type="text"></input></td>
         <td><button id="button" type=”submit” value=”submit” > Submit </button></td>
+        <a href={{ url_for('.delete') }} class="button"> Delete </a>
+        <input id="clickMe" type="button" value="Delete" onclick="httpGet(url_for('.delete'));" /> 
      </div>
     <table>
         </tr>
@@ -70,7 +81,14 @@ div[name='back_card'] {padding-top:30px}
 </body>
 
 <script>
-   
+
+function httpGet(theUrl)
+{   
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+}
+
 $("#myform).submit(function(e) {
     e.preventDefault()    
 $.ajax({

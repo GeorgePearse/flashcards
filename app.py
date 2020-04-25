@@ -9,31 +9,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_dangerously_set_inner_html
 import random
-from flask_table import Table, Col #This is a hard barrier, have to resolve this first before you get anywhere good
-from jinja2 import Template
 import pandas as pd
 
-# Declare your table
-class ItemTable(Table):
-    name = Col('Name')
-    description = Col('Description')
-
-# Get some objects
-class Item(object):
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-
-items = [Item('Name1', 'Description1'),
-         Item('Name2', 'Description2'),
-         Item('Name3', 'Description3')]
-# Or, equivalently, some dicts
-items = [dict(name='Name1', description='Description1'),
-         dict(name='Name2', description='Description2'),
-         dict(name='Name3', description='Description3')]
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-coll = client["local"]["test4"]
+cards = client["local"]["cards"]
+guesses_data = client["local"]["guesses_data"]
 
 app = Flask(__name__)
 
@@ -95,19 +76,18 @@ def login():
     if request.method == 'POST':
         return render_template('home_page.html')
 
-# Print the html table
-@app.route(rule="/display_table", methods = ['GET'])
-def display_table():
-    #rows = list(coll.find()) 
-    #rows = str(rows).split('}, {')    
-    table = ItemTable(items)
-    return render_template('table.html', table=table.__html__())
-
-@app.route(rule="/display_pandas", methods = ['GET'])
+# Return the html table 
+@app.route("/display_guesses", methods = ['GET'])
 def display_pandas():
-    array = list(coll.find())
-    pls = pd.DataFrame(array)
-    return render_template('table.html', table=pls.to_html())
+    array = list(guesses_data.find())
+    guesses_df = pd.DataFrame(array)
+    return render_template('table.html', table=guesses_df.to_html())
+
+@app.route("/display_cards", methods = ['GET'])
+def display_cards():
+    array = list(cards.find())
+    cards_df = pd.DataFrame(array)
+    return render_template('table.html', table=cards_df.to_html())
 
 @app.route("/home", methods=['GET','POST'])
 def home():
@@ -135,7 +115,7 @@ def insert():
         form = request.form.to_dict()
         front = form.get('card_front', 'no front') # not working! 
         back = form.get('card_back', 'no back') 
-        coll.insert_one({'front':front,'back':back}) # this will fix your future visualisation problem!!!!
+        cards.insert_one({'front':front,'back':back}) # this will fix your future visualisation problem!!!!
         return render_template('insert_response.html',front=front,back=back,data='DATA = ' + str(data),form= 'FORM =' + str(form))
 
 @app.route('/translate', methods=['GET','POST'])
@@ -151,50 +131,28 @@ def translate():
         response = requests.request("GET", url, headers=headers, params=querystring)
         return json.loads(response.text)['outputs'][0]['output']
 
-@app.route('/all_cards', methods=['GET']) # Call this the card stack?
-def all_cards():
-    deck = {}
-    cursor = coll.find({})
-    for record in cursor:
-        item = list(record.values())[1]
-        value = list(record.keys())[1]
-        if item not in list(record.keys()):
-            deck[item] = value
-        else:
-            pass
-    return str(deck)
-
-@app.route('/guesses', methods=['GET']) # Call this the card stack? -- want many of these as well!
-def guesses():
-    guesses_data = client["local"]["guesses"]
-    cursor = guesses_data.find({})
-    records = []
-    for record in cursor:
-        records.append(record)
-    return str(records)
+@app.route('/delete', methods=['GET'])
+def delete():
+    return 'Delete Stuff here'
 
 @app.route('/check', methods=['GET','POST'])
 def check():
-    guesses_data = client["local"]["guesses"]
     deck = {}
-    cursor = coll.find({})
+    cursor = cards.find({})
     for record in cursor:
-        item = list(record.values())[1]
-        value = list(record.keys())[1]
-        if item not in list(record.keys()):
-            deck[item] = value
-        else:
-            pass
+        item = record['back']
+        value = record['front']
+        deck[item] = value
 
-    cards = list(deck.keys())
-    card = random.choice(cards)
+    fronts = list(deck.keys())
+    card = random.choice(fronts)
     right_answer = deck[card]
     if request.method == 'GET':
         return render_template('check.html', card=card)
     if request.method == 'POST':
         data = request.form
         answer = data['card_front']
-        guesses_data.insert_one({'right_answer':right_answer,'answer':answer})
+        guesses_data.insert_one({'right_answer':right_answer,'answer':answer}) # again this wil fix many problems down the line!
         return render_template('check.html', card=card, right_answer=right_answer, answer=answer)
 
 
