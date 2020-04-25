@@ -9,24 +9,28 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_dangerously_set_inner_html
 import random
-from flask_table import Table, Col
+from flask_table import Table, Col #This is a hard barrier, have to resolve this first before you get anywhere good
 from jinja2 import Template
+import pandas as pd
 
 # Declare your table
 class ItemTable(Table):
-    id_ = Col('id_')
-    objectid = Col('objectid')
-    right_answer = Col('right answer')
-    answer = Col('answer')
+    name = Col('Name')
+    description = Col('Description')
 
 # Get some objects
 class Item(object):
-    def __init__(self, id_, objectid, right_answer, answer):
-        self.id = id_
-        self.objectid = objectid
-        self.right_answer = right_answer
-        self.answer = answer
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
 
+items = [Item('Name1', 'Description1'),
+         Item('Name2', 'Description2'),
+         Item('Name3', 'Description3')]
+# Or, equivalently, some dicts
+items = [dict(name='Name1', description='Description1'),
+         dict(name='Name2', description='Description2'),
+         dict(name='Name3', description='Description3')]
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 coll = client["local"]["test4"]
@@ -94,9 +98,16 @@ def login():
 # Print the html table
 @app.route(rule="/display_table", methods = ['GET'])
 def display_table():
-    rows = list(coll.find())    
-    table = ItemTable(rows)
+    #rows = list(coll.find()) 
+    #rows = str(rows).split('}, {')    
+    table = ItemTable(items)
     return render_template('table.html', table=table.__html__())
+
+@app.route(rule="/display_pandas", methods = ['GET'])
+def display_pandas():
+    array = list(coll.find())
+    pls = pd.DataFrame(array)
+    return render_template('table.html', table=pls.to_html())
 
 @app.route("/home", methods=['GET','POST'])
 def home():
