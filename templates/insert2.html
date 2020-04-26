@@ -3,9 +3,11 @@
 <head>
 <style>
 
+
+
 div[name='card'] {
     border-radius: 25px;
-    background: white;
+    background: black;
     opacity: 0.8;
     width: 50%;
     height: 400px;
@@ -13,14 +15,65 @@ div[name='card'] {
     position:relative;
 }
 
-body {
-    background-image:url('static/starry.jpg'); 
-    background-attachment:fixed;
-    background-repeat: no-repeat;
-    background-position:center;
-    background-size: 100% 100%;
-    height:500vh
+.navbar {
+  float: 0px;
+  overflow: hidden;
+  background-color:rgb(224, 218, 218) ;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 93%; /* Full width */
+  padding: 0em 3em;
 }
+
+
+/* Links inside the navbar */
+.navbar a[name="buttons"] {
+  float: right;
+  display: block;
+  color: #8d8787;
+  text-align: center;
+  font-weight: 900;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+.navbar a[name="buttons"]:hover {
+  float: right;
+  display: block;
+  color:  rgb(248, 130, 87);
+  border-top: 2px solid;
+  border-top-color: rgb(248, 130, 87);
+  text-align: center;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+
+.navbar a[name='company'] {
+  float: left;
+  display: block;
+  color: #8d8787;
+  text-align: center;
+  font-weight: 900;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+div[name='company'] {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 30px;
+  text-decoration
+  : none;
+}
+
+
+body {
+    background-color: white;
+}
+
 #button {
   border-radius: 10px;  
   transition-duration: 0.4s;
@@ -75,6 +128,18 @@ div[name='back_card'] {
 
 </style>
 </head>
+
+<div class="navbar">
+    <a name="company"> Flash Learning </a>
+    <a name="buttons" href={{ url_for('.about') }}  > About </a>
+    <a name="buttons" href={{ url_for('.check') }}  > Learn </a>
+    <a name="buttons" href={{ url_for('./dash/') }}  > Stats </a>
+    <a name="buttons" href={{ url_for('.insert') }}  > + </a>
+    <a name="buttons" href={{ url_for('.canvas') }}  > Canvas </a>
+    <a name="buttons" href={{ url_for('.display_cards') }}  > Card Store </a>
+  </div>
+  
+
 <body>
     <div name="card">
         <form id="myform" action="/insert" method="post">

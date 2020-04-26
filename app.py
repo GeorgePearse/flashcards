@@ -80,7 +80,7 @@ def login():
     if request.method == 'GET':
         return render_template('pretty_page.html')
     if request.method == 'POST':
-        return render_template('home_page.html')
+        return render_template('home.html')
 
 # Return the html table 
 @app.route("/display_guesses", methods = ['GET'])
@@ -97,7 +97,7 @@ def display_cards():
 
 @app.route("/home", methods=['GET','POST'])
 def home():
-    return render_template('home_page.html')
+    return render_template('home.html')
 
 @app.route('/about', methods=['GET','POST'])
 def about():
@@ -114,7 +114,7 @@ def canvas():
 @app.route('/insert', methods=['GET','POST']) #hit simultaneously by two queries
 def insert():
     if request.method == 'GET':
-        return render_template('insert2.html',user="George")
+        return render_template('insert.html',user="George")
     if request.method == 'POST':
         # not working!
         data = request.data
