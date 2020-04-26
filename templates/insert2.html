@@ -27,12 +27,12 @@ body {
   padding: 15px 25px;
   background-color: rgb(113, 113, 238);
   position: absolute;
-  right: 100px;
+  right: 100px; /* prevents it from overlapping with the a tag */
   bottom: 0px;
 }
 
 #button:hover {
-  background-color: blue; /* Green */
+  background-color: blue; 
   color: white;
 }
 
@@ -42,60 +42,75 @@ a {
   padding: 15px 25px;
   background-color: rgb(113, 113, 238);
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
 }
 
 a:hover {
-  background-color: blue; /* Green */
+  background-color: blue; 
   color: white;
 }
 
-/*
+
 input[name='card_front'] {
-    left: 300px;
+    position: absolute;
+    top: 100px;
 }
 
 input[name='card_back'] {
-    left: 700px;
-} */
+    position: relative;
+    top: 100px;
+} 
 
-div[name='front_card'] {padding-top:30px}
-div[name='back_card'] {padding-top:30px}
+div[name='front_card'] {
+    position: relative;
+    padding-top:30px
+    }
+
+div[name='back_card'] {
+    position: relative;
+    padding-top:30px
+    }
 
 
 </style>
 </head>
 <body>
-<div name="card">
-<form id="myform" action="/insert" method="post">
-    <div name='front_card' style="width: 50%; float:left">
-        <td> <b> Front: </b> </td> </br>
-        <td><input name="card_front" type="text"></input></td>
-     </div>
+    <div name="card">
+        <form id="myform" action="/insert" method="post">
+            <div name='front_card' style="width: 50%; float:left">
+                <input name="card_front" type="text">
+            </div>
 
-     <div name='back_card' style="width: 50%; float:right">
-        <td> <b> Back: </b> </td> </br>
-        <td><input name="card_back" type="text"></input></td>
-        <td><button id="button" type=”submit” value=”submit” > Submit </button></td>
-        <a href={{ url_for('.delete') }} class="button" style="text-decoration:none"> Delete </a>
-     </div>
-    <table>
-        </tr>
-    </table>
-</form>
-</div>
+            <div name='back_card' style="width: 50%; float:right">
+                <input name="card_back" type="text">
+                <button id="button" type=”submit” value=”submit” > Submit </button>
+                <a href={{ url_for('.delete') }} class="button" style="text-decoration:none"> Delete </a>
+            </div>
+        </form>
+    </div>
 </body>
 
 <script>
+/* Ajax is actually needed in this case due to the dual inputs and single submission*/
+$("#myform").submit(function(e) {
 
-$("#myform).submit(function(e) {
-    e.preventDefault()    
+e.preventDefault(); // avoid to execute the actual submit of the form.
+
+var form = $(this);
+var url = form.attr('action');
+
 $.ajax({
-    type : "POST",
-    url : "{{ url_for('insert') }}",
-    data: JSON.stringify(data, null, '\t'),
-    contentType: 'application/json;charset=UTF-8',
-    success: function(result) {console.log(result);}  }) 
+       type: "POST",
+       url: url,
+       data: form.serialize(), // serializes the form's elements.
+       success: function(data)
+       {
+           alert(data); // show response from the php script.
+       }
+     });
+
+
+});
 </script> 
 </html>
