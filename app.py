@@ -1,5 +1,6 @@
 
-from flask import Flask, request, jsonify, render_template, url_for, redirect, session
+from flask import Flask, request, jsonify, render_template, url_for, redirect, session,send_file
+from io import BytesIO
 import json
 import requests
 import pymongo
@@ -18,7 +19,7 @@ class data_store:
 
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-cards = client["local"]["cards"]
+cards = client["local"]["cards2"]
 guesses_data = client["local"]["guesses_data"]
 
 app = Flask(__name__)
@@ -74,6 +75,10 @@ app2.layout = html.Div(style={'backgroundColor': colors['background']}, children
     )
 ])
 
+def retention(r1,t_passed):
+    r = r1*np.exp(-t_passed*(1/r1))
+    return r
+
 @app.route("/login", methods=['GET','POST'])
 @app.route('/', methods=['GET','POST'])
 def login():
@@ -87,13 +92,27 @@ def login():
 def display_pandas():
     array = list(guesses_data.find())
     guesses_df = pd.DataFrame(array)
-    return render_template('table.html', table=guesses_df.to_html())
+    return render_template('table.html', table=guesses_df.to_html(), set_= "guesses_data")
 
 @app.route("/display_cards", methods = ['GET'])
 def display_cards():
     array = list(cards.find())
     cards_df = pd.DataFrame(array)
-    return render_template('table.html', table=cards_df.to_html())
+    return render_template('table.html', table=cards_df.to_html(), set_= "cards2")
+
+@app.route("/excel/<set_>/", methods = ['GET'])
+def excel_guesses(set_):
+    collection = client["local"][set_]
+    array = list(collection.find())
+    cards_df = pd.DataFrame(array)
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    cards_df.to_excel(writer, sheet_name='Sheet1')
+    writer.save()
+    writer.save()
+    output.seek(0)
+    return send_file(output, attachment_filename='output.xlsx', as_attachment=True)
+
 
 @app.route("/home", methods=['GET','POST'])
 def home():
@@ -116,13 +135,12 @@ def insert():
     if request.method == 'GET':
         return render_template('insert.html',user="George")
     if request.method == 'POST':
-        # not working!
         data = request.data
         form = request.form.to_dict()
         front = form.get('card_front', 'no front') # not working! 
         back = form.get('card_back', 'no back') 
         cards.insert_one({'front':front,'back':back,'time':datetime.now()}) # this will fix your future visualisation problem!!!!
-        return render_template('insert_response.html',front=front,back=back,data='DATA = ' + str(data),form= 'FORM =' + str(form))
+        return render_template('insert.html',user="George")
 
 @app.route('/translate', methods=['GET','POST'])
 def translate():
@@ -142,8 +160,13 @@ def delete():
     return 'Delete Stuff here'
 
 @app.route('/check', methods=['GET','POST'])
-def check():        
+def check():        # order by minimum number of answers for now
     deck = {}
+    array = list(guesses_data.find())
+    guesses_df = pd.DataFrame(array) 
+    guesses_df['num_guesses'] = guesses_df.groupby('right_answer').count()
+    sorted_guesses = guesses_df.sort_values('num_guesses',ascending=True)
+
     cursor = cards.find({})
     for record in cursor:
         item = record['back']
@@ -151,8 +174,7 @@ def check():
         deck[item] = value
 
     if request.method == 'GET':
-        fronts = list(deck.keys())
-        card = random.choice(fronts)
+        card = guesses_df['right_answer'][0]
         right_answer = deck[card]
         session['right_answer'] = right_answer
         return render_template('question.html', card=card)

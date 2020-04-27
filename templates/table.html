@@ -7,20 +7,108 @@
       width: 100%;
     }
 
-    td, th {
-      border: 1px solid #08126e;
+    td {
+      border: 1px solid rgb(248, 130, 87);
       text-align: left;
       padding: 8px;
     }
 
-    tr:nth-child(even) {
-      background-color: #949ef8;
+    th {
+    background-color: black
+    color: white;
     }
-  </style>
+
+    tr:nth-child(even) {
+      background-color: rgb(248, 130, 87);
+    }
+
+    div[name='card'] {
+    background: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    opacity: 0.8;
+    width: 50%;
+    height: 400px;
+    margin: 0 auto;
+    position:relative;
+    margin-top: 100px;
+    }
+    /* The navigation bar */
+.navbar {
+  float: left;
+  overflow: hidden;
+  background-color:rgb(224, 218, 218) ;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 93%; /* Full width */
+  padding: 0em 3em;
+
+}
+
+
+/* Links inside the navbar */
+.navbar a[name="buttons"] {
+  float: right;
+  display: block;
+  color: #8d8787;
+  text-align: center;
+  font-weight: 900;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+.navbar a[name="buttons"]:hover {
+  float: right;
+  display: block;
+  color:  rgb(248, 130, 87);
+  border-top: 2px solid;
+  border-top-color: rgb(248, 130, 87);
+  text-align: center;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+
+.navbar a[name='company'] {
+  float: left;
+  display: block;
+  color: #8d8787;
+  text-align: center;
+  font-weight: 900;
+  padding: 14px 30px;
+  text-decoration: none;
+}
+
+div[name='company'] {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 30px;
+  text-decoration
+  : none;
+}
+
+
+body {
+    background-color: white;
+}
+
+</style>
+  <body>
+    <div class="navbar">
+      <a name="company"> Flash Learning </a>
+      <a name="buttons" href={{ url_for('.about') }}  > About </a>
+      <a name="buttons" href={{ url_for('.check') }}  > Learn </a>
+      <a name="buttons" href={{ url_for('./dash/') }}  > Stats </a>
+      <a name="buttons" href={{ url_for('.insert') }}  > + </a>
+      <a name="buttons" href={{ url_for('.canvas') }}  > Canvas </a>
+      <a name="buttons" href={{ url_for('.display_cards') }}  > Card Store </a>
+    </div>
   
-<body>
-
-{{ table|safe }}
-
-</body>
+  
+    <div name='card'>
+      <a href="/excel/{{set_}}/" }} class="button" > Excel </a>
+      {{ table|safe }}
+    </div>
+  </body>
 </html>
