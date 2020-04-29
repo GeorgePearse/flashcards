@@ -1,8 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <style>
-
 div[name="navbar"] {
   float: 0px;
   overflow: hidden;
@@ -133,26 +133,12 @@ p[name='answer'] {
     left: 50px;
 }
 
-p[name='deck1'] {
-    top: 300px;
-    left: 50px;
-    font-size: 50px;
-    color: rgb(224, 218, 218)
-}
-
-div[name="left_bar"]  {
-    background-color: black;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    opacity: 0.8;
-    width: 200px;
-    height: 400px;
-    top: 100px;
-    left: 0px;
-    position: absolute;
-}
 
 </style>
-
+<header>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</header>
+  
 <body>
 <div class="navbar" name="navbar"> 
     <a name="company"> Flash Learning </a>  
@@ -176,9 +162,7 @@ div[name="left_bar"]  {
      </div>
 </div>
 
-<div name='left_bar'> <!-- this will have to be another database :O -->
-    <p name='deck1'> Deck # </p>  <!-- this needs to be a button which changes the collection in use!  tabindex=1 -->
-</div>
+{% include 'side.html' %} 
 
 </body>
 </html>

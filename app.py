@@ -87,6 +87,10 @@ def login():
     if request.method == 'POST':
         return render_template('home.html')
 
+@app.route("/raw_test", methods=['GET','POST'])
+def raw_test():
+    return render_template("a.html")
+
 # Return the html table 
 @app.route("/display_guesses", methods = ['GET'])
 def display_pandas():
@@ -163,26 +167,31 @@ def delete():
 def check():        # order by minimum number of answers for now
     deck = {}
     array = list(guesses_data.find())
-    guesses_df = pd.DataFrame(array) 
-    guesses_df['num_guesses'] = guesses_df.groupby('right_answer').count()
-    sorted_guesses = guesses_df.sort_values('num_guesses',ascending=True)
-
+    
     cursor = cards.find({})
     for record in cursor:
-        item = record['back']
-        value = record['front']
+        item = record['front'] # the order of these determines whether card selection works
+        value = record['back']
         deck[item] = value
 
     if request.method == 'GET':
-        card = guesses_df['right_answer'][0]
-        right_answer = deck[card]
+        guesses_df = pd.DataFrame(array) 
+        grouped = guesses_df.groupby('right_answer')['_id'].count()
+        sorted_guesses = grouped.sort_values()
+        minimum = sorted_guesses.min()
+        worst_cards = list(sorted_guesses[sorted_guesses==minimum].keys()) #need more manipulation
+        new_cards = set(deck.keys()) - set(worst_cards)
+        if len(new_cards) != 0:
+            worst_cards = new_cards
+        right_answer = random.choice(list(worst_cards)) # error coming from a guess which is not in the answers!!!!!
+        card = deck[right_answer] # this is the error!
         session['right_answer'] = right_answer
         return render_template('question.html', card=card)
 
     if request.method == 'POST':
         data = request.form
         answer = data['card_front']
-        right_answer = session.get('right_answer','FAILURE')
+        right_answer = session.get('right_answer','FAILURE') # try has to be used because there's no other way to pass random choice accross
         guesses_data.insert_one({'right_answer':right_answer,'answer':answer,'time':datetime.now()}) # again this wil fix many problems down the line!
         match = "True" if answer == right_answer else "False"
         return render_template('check.html',right_answer=right_answer, answer=answer,match=match)
